@@ -1,0 +1,15 @@
+/Find the solitary cell details of the prisoner who has stabbed someone and had guests/
+select prisoner_ID from Solitary
+where reason like '%Stabbing%'  and prisoner_ID=(select prisoner_ID from guest_logs where Solitary.prisoner_ID=guest_logs.prisoner_ID);
+
+/Find out how many hours a guard worked, whose name starts with a ‘J’ and who was in charge of a prisoner sentenced for ‘Murder’./
+select hours_worked from guard where guard_ID in(select guard_ID from prisoner where guard_name like 'J%' and prisoner_crime='Murder');
+
+/Find out the next rotation of a guard who is in charge of prisoners with blood type: ‘B+’./
+select next_location from Guard_Rotations where guard_ID in(select guard_ID from prisoner where prisoner_bloodgrp='B+');
+
+/Find out the duration a prisoner borrowed a book, while being under the eyes of a guard with I.D: ‘5’./
+select duration from Prison_Library where prisoner_ID in(select prisoner_ID from prisoner where guard_ID=5); 
+
+/Find out the name of the doctor who treated this prisoner who committed murder and is set to be executed by ‘Poison Gas’./
+select doctor from Prison_Clinic where prisoner_ID in(select prisoner_ID from Deathrow where execution_method='Poison Gas' and prisoner_ID in(select prisoner_ID from prisoner where prisoner_crime='Murder'));

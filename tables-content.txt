@@ -1,0 +1,278 @@
+show databases;
+use shaikhdb;
+
+select *
+from prisoner;
+
+select *
+from guard;
+
+show tables;
+
+create table cells (
+cell_no int,
+cell_block varchar(3),
+wing_no int,
+guard_ID int,
+prisoner_ID int,
+foreign key (guard_ID) references guard(guard_ID),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into cells values(138,'C',2,4,2111218);
+insert into cells values(900,'A',3,10,2112000);
+insert into cells values(437,'B',4,10,2112012);
+insert into cells values(167,'C',7,2,2112150);
+insert into cells values(343,'A',1,5,2112380);
+
+select *
+from cells;
+
+
+create table Guard_Rotations (
+guard_ID int,
+assigned_location varchar(20),
+duration varchar(20),
+next_location varchar(20),
+next_timing varchar(10),
+foreign key (guard_ID) references guard(guard_ID)
+);
+
+insert into Guard_Rotations values(5,'B Block',8,'C Block','9pm');
+insert into Guard_Rotations values(10,'C Block',8,'Library','3 pm');
+insert into Guard_Rotations values(4,'B Block',8,'C Block','7 pm');
+insert into Guard_Rotations values(2,NULL,NULL,NULL,NULL);
+
+select *
+from Guard_Rotations;
+
+delete from prisoner where prisoner_ID=2111578;
+
+create table Prisoner_Work_Rotations (
+prisoner_ID int,
+guard_ID int,
+location varchar(20),
+work_nature varchar(30),
+day varchar(10),
+hours int,
+foreign key (guard_ID) references guard(guard_ID),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into Prisoner_Work_Rotations values(2112824,12,'A Block','Plumber','Monday',8);
+insert into Prisoner_Work_Rotations values(2112380,10,'Workshop','Toolkeeping','Tuesday',8);
+insert into Prisoner_Work_Rotations values(2112150,4,'Kitchen','Chef','Wednesday',8);
+insert into Prisoner_Work_Rotations values(2112012,4,'Kitchen','Helper','Monday',10);
+insert into Prisoner_Work_Rotations values(2112000,5,'Library','Librarian','Saturday',9);
+
+select *
+from Prisoner_Work_Rotations;
+
+create table Solitary (
+solitary_cell int,
+prisoner_ID int,
+duration varchar(20),
+guard_ID int,
+reason varchar(30),
+foreign key (guard_ID) references guard(guard_ID),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into Solitary values(124,2112012,'3 days',5,'Fighting with another prisoner');
+insert into Solitary values(123,2112824,'2 days',4,'Talking back to a guard');
+insert into Solitary values(123,2112380,'7 days',10,'Stabbing the janitor');
+
+select *
+from Solitary;
+
+create table Prison_Library (
+prisoner_ID int,
+books_borrowed varchar(50),
+duration varchar(20),
+charges_penalties varchar(10),
+book_condition varchar(20),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into Prison_Library values(2112000,'Agatha Christie-The Murder of Roger Ackroyd','3 days','No','Good');
+insert into Prison_Library values(2112012,'Dan Brown-DaVinci Code','7 days','Yes','Good');
+insert into Prison_Library values(2112150,'Frederick Forsyth-The Odessa File','5 days','No','Good');
+
+select *
+from Prison_Library;
+
+delete from Prison_Library where books_borrowed='Rick Riordan-Heroes of Olympus';
+
+
+create table Guest_Logs(
+guest_ID int,
+guest_name varchar(20),
+guest_relation varchar(20),
+prisoner_ID int,
+time_entered varchar(5),
+time_exited varchar(5),
+criminal_history varchar(30),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into Guest_Logs values(145,'David','Friend',2112824,9.00,9.25,'No');
+insert into Guest_Logs values(221,'Adrian','Father',2111218,15.15,16.40,'No');
+insert into Guest_Logs values(1,'Anastasia','Friend',2112380,8.00,9.25,'No');
+
+select *
+from Guest_Logs;
+
+drop table Prison_Clinic;
+
+create table Prison_Clinic(
+injury varchar(30),
+prisoner_ID int,
+doctor varchar(30),
+nurse varchar(30),
+medical_issues varchar(30),
+medecine_prescribed varchar(30),
+date_admitted datetime,
+date_released datetime,
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into Prison_Clinic values('Fracture',2112150,'Dr. James','Lucida','No','Morphine','2020-02-21 11:12:01','2020-02-21 15:06:00');
+insert into Prison_Clinic values('Broken Jaw',2112012,'Dr. James','Holly','Diabetes','Aerius','2021-07-01 13:23:44','2021-07-04 15:30:45');
+
+select *
+from Prison_Clinic;
+
+drop table High_Priority_Prisoners;
+
+create table High_Priority_Prisoners(
+prisoner_ID int,
+reason varchar(30),
+special_protection varchar(50),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into High_Priority_Prisoners values(2112000,'Tried to escape','Three guards outside cell');
+
+drop table High_Priority_Prisoners;
+
+select *
+from High_Priority_Prisoners;
+
+create table Deathrow(
+prisoner_ID int,
+execution_method varchar(30),
+execution_date_time datetime,
+last_starter varchar(30),
+last_main_course varchar(30),
+last_dessert varchar(30),
+foreign key (prisoner_ID) references prisoner(prisoner_ID)
+);
+
+insert into Deathrow values(2111218,'Hanging','2020-11-15 14:56:59','Baked Beans','Mashed Potatoes','Strawberry Custard');
+insert into Deathrow values(2112380,'Lethal Injection','2021-08-12 11:12:01','Cornflakes','Pizza','Chocolate Custard');
+
+select *
+from Deathrow;
+
+drop table Prison_Canteen;
+
+create table Prison_Canteen(
+caterer_of_the_day varchar(30),
+nationality varchar(20),
+drinks varchar(50),
+starters varchar(50),
+main_course varchar(50),
+dessert varchar(50),
+date date
+);
+
+insert into Prison_Canteen values('Chefs Touch','American','Orange Juice','Chicken Wings','Vegetarian pasta','Peach Cobbler','2021-2-27');
+insert into Prison_Canteen values('Chefs Touch','American','Tomato Soup','Cheese Balls','Chicken & mushroom pie','Vanilla Gelato','2021-1-15');
+insert into Prison_Canteen values('Eatie Some Ziti','Italian','Negroni','Peppers with roasted garlic anchovies and basil','Puglian Lamb Stew ','Tiramisu Cheesecake ','2020-1-20');
+insert into Prison_Canteen values('Mexican Buffet','Mexican','Michelada','Guacamole','Pollo Adobado','Tres Leches Pastel','2020-5-26');
+insert into Prison_Canteen values('Shaky Shaky','Slovakian','Pepsi','Tomato Soup','Lasagna','Mc Flurry','2021-05-21');
+insert into Prison_Canteen values('Tasty Fasty','Afghanistan','Coke','Tomato Soup','Lasagna','Mc Flurry','2021-05-25');
+insert into Prison_Canteen values('Awesome Foods','Slovakian','Margarita','Tomato Soup','Lasagna','Mc Flurry','2021-05-30');
+
+select *
+from Prison_Canteen;
+
+delete from prisoner where prisoner_ID=9999999;
+
+select *
+from prisonercount;
+
+create table prisonercount(tablekey varchar(6),no_of_prisoners int,no_of_cells_left int);
+insert into prisonercount values('key',8, 48);
+
+/Create a trigger to update the number of prisoners and available cells after each deletion of prisoner./
+
+delimiter //
+
+create trigger prisonersdatadelete 
+after delete on prisoner
+for each row 
+begin
+	update prisonercount
+	set 
+    no_of_prisoners=no_of_prisoners-1,
+    no_of_cells_left=no_of_cells_left+1
+    where tablekey='key';
+end //
+
+delimiter ;
+
+drop trigger prisonersdatadelete;
+
+/Create a trigger to update the number of prisoners and available cells after each insertion of prisoner./
+
+delimiter //
+
+create trigger prisonersdata 
+after insert on prisoner
+for each row 
+begin
+	update prisonercount
+	set 
+    no_of_prisoners=no_of_prisoners+1,
+    no_of_cells_left=no_of_cells_left-1
+    where tablekey='key';
+end //
+
+delimiter ;
+drop trigger prisonersdata;
+
+/Create a procedure which tells us the details of the days Slovakian caterers served a specific meal to the Death row prisoners./
+
+delimiter &&
+create  procedure last_meal_proc( IN l_last_starter varchar(50) , IN l_last_main_course varchar(50),
+IN l_last_dessert varchar(50))
+
+begin
+	(select *
+	from Prison_Canteen , Deathrow  
+	where starters = last_starter
+    and main_course  = last_main_course
+    and dessert  =last_dessert
+    and starters = l_last_starter
+    and main_course = l_last_main_course
+    and last_dessert = l_last_dessert
+    and nationality='Slovakian'
+    order by prisoner_ID);
+end &&
+
+delimiter ;
+
+call last_meal_proc('Tomato Soup','Lasagna','Mc Flurry');
+
+/Create a procedure which counts the number of times a prisoner has been in solitary and displays the ones which have been in solitary more than once./
+delimiter &&
+create procedure Solitary_count()
+begin
+(select Solitary.prisoner_id as 'Prisoner ID', prisoner.prisoner_Name as 'Prisoner Name' , COUNT(Solitary.prisoner_ID) as 'No of Times' from Solitary,prisoner where Solitary.prisoner_ID = prisoner.prisoner_ID  group by Solitary.prisoner_ID having COUNT(Solitary.prisoner_ID)>1);
+end &&
+delimiter ;
+
+call Solitary_count();
+
+
